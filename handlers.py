@@ -116,6 +116,11 @@ async def pr_get_horoscope(bot, callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
+async def get_sticker(bot, message: types.Message):
+    if message.text.find('ахах') != -1:
+        await message.answer_sticker(config.STICKERS[random.randint(0, 18)])
+
+
 async def command_handler(bot, callback_query: types.CallbackQuery):
     global bot_state
     if bot_state == 'fuck_you':
