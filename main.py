@@ -35,9 +35,10 @@ async def get_menu(message: types.Message):
 async def fuck_you(callback_query: types.CallbackQuery):
     await hand.command_handler(bot, callback_query)
 
+
 @dp.message_handler()
 async def get_sticker(message: types.Message):
-    await hand.get_sticker(bot, message)
+    await hand.get_sticker(message)
 
 
 if __name__ == '__main__':
