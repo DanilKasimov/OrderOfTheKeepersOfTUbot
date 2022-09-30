@@ -53,3 +53,15 @@ class DbConnection:
             return result
         else:
             print('Error!! DataBase don`t exists')
+
+    def get_user_id(self, username):
+        if os.path.isfile(self.db_name):
+            connection = sqlite3.connect(self.db_name)
+            cursor = connection.cursor()
+            cursor.execute(f"SELECT id FROM users WHERE login = '{username}'")
+            result = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return result[0][0]
+        else:
+            print('Error!! DataBase don`t exists')
