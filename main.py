@@ -8,7 +8,7 @@ dp = Dispatcher(bot)
 
 @dp.callback_query_handler(lambda c: c.data == 'horoscope')
 async def callback_horoscope(callback_query: types.CallbackQuery):
-    await hand.get_horoscope(bot, callback_query)
+    await hand.horoscope_handler(bot, callback_query)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'registration')

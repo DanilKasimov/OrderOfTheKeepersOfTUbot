@@ -2,6 +2,10 @@ from aiogram import types
 import os
 import DataBaseUtils
 import datetime
+import random
+import config
+import requests
+from bs4 import BeautifulSoup
 
 db = DataBaseUtils.DbConnection('OrderBot.db')
 banned_users = {}
@@ -9,11 +13,6 @@ bot_state = 'Simple'
 media_file_path = str(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'media')) + '\\'
 start_button = types.KeyboardButton('/Старт')
 start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True).add(start_button)
-
-
-async def get_horoscope(bot, callback_query: types.CallbackQuery):
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
-    await bot.send_message(callback_query.message.chat.id, 'У всех всё будет хорошо')
 
 
 async def registration_user(bot, callback_query: types.CallbackQuery):
@@ -37,6 +36,20 @@ async def callback_handler(bot, callback_query: types.CallbackQuery):
     for b in buttons:
         fuck_keyboard.add(b)
     await callback_query.message.answer('Выберите пользователя', reply_markup=fuck_keyboard)
+    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+
+
+async def horoscope_handler(bot, callback_query: types.CallbackQuery):
+    global bot_state
+    bot_state = callback_query.data
+    names = config.ZODIACS.keys()
+    buttons = []
+    for i in names:
+        buttons.append(types.InlineKeyboardButton(i, callback_data=config.ZODIACS[i]))
+    fuck_keyboard = types.InlineKeyboardMarkup()
+    for b in buttons:
+        fuck_keyboard.add(b)
+    await callback_query.message.answer('Выберите знак зодиака', reply_markup=fuck_keyboard)
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -68,8 +81,9 @@ async def pr_fuck_you(bot, callback_query: types.CallbackQuery):
 
 
 async def pr_set_mouse(bot, callback_query: types.CallbackQuery):
-    if os.path.isfile(media_file_path + callback_query.data + '.png'):
-        file = types.InputFile(media_file_path + callback_query.data + '.png')
+    number = random.randint(1, 26)
+    if os.path.isfile(media_file_path + 'mouse_' + str(number) + '.jpg'):
+        file = types.InputFile(media_file_path + 'mouse_' + str(number) + '.jpg')
     else:
         file = types.InputFile(media_file_path + 'мышь.jpg')
     await bot.send_photo(
@@ -77,7 +91,6 @@ async def pr_set_mouse(bot, callback_query: types.CallbackQuery):
         file,
         caption=f'@{callback_query.data} с этого момента официально считается мышью'
     )
-    banned_users[db.get_user_id(callback_query.data)] = datetime.datetime.now()
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -88,7 +101,18 @@ async def pr_get_complement(bot, callback_query: types.CallbackQuery):
         file,
         caption=f'@{callback_query.data} ну просто волшебная булочка с корицей'
     )
-    banned_users[db.get_user_id(callback_query.data)] = datetime.datetime.now()
+    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+
+
+async def pr_get_horoscope(bot, callback_query: types.CallbackQuery):
+    file = types.InputFile(media_file_path + callback_query.data + '.png')
+    req = requests.get(config.HOROSCOPE_URL + callback_query.data)
+    soup = BeautifulSoup(req.text, features="html.parser")
+    await bot.send_photo(
+        callback_query.message.chat.id,
+        file,
+        caption=soup.find_all(id="eje_text")[0].findNext().findNext().findNext().findNext().findNext().findNext().text
+    )
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -103,4 +127,6 @@ async def command_handler(bot, callback_query: types.CallbackQuery):
     elif bot_state == 'complement':
         bot_state = 'Simple'
         await pr_get_complement(bot, callback_query)
-
+    elif bot_state == 'horoscope':
+        bot_state = 'Simple'
+        await pr_get_horoscope(bot, callback_query)
