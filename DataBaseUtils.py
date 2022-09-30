@@ -41,3 +41,15 @@ class DbConnection:
                 print('Error!! User already exists')
         else:
             print('Error!! DataBase don`t exists')
+
+    def get_all_users(self):
+        if os.path.isfile(self.db_name):
+            connection = sqlite3.connect(self.db_name)
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM users")
+            result = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return result
+        else:
+            print('Error!! DataBase don`t exists')
