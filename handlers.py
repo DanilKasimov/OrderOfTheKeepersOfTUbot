@@ -141,7 +141,7 @@ async def get_message_answer(bot, message: types.Message):
 def check_fix(text):
     if text.lower().find('правь') != -1:
         return True
-    elif text.lower().find('править') != -1:
+    elif text.lower().find('правит') != -1:
         return True
     elif text.lower().find('правте') != -1:
         return True
