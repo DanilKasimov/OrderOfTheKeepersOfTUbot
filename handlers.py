@@ -118,9 +118,12 @@ async def pr_get_horoscope(bot, callback_query: types.CallbackQuery):
 
 
 async def get_sticker(message: types.Message):
-    if message.text.find('ахах') != -1:
-        await message.answer_sticker(config.STICKERS[random.randint(0, 18)])
-
+    if message.text.lower().find('ахах') != -1:
+        await message.answer_sticker(config.FUNY_STICKERS[random.randint(0, 18)])
+    elif message.text.lower().find('пиздец') != -1:
+        await message.answer_sticker(config.SHOCK_STICKERS[random.randint(0, 16)])
+    elif message.text.lower().find('хорош') != -1:
+        await message.answer_sticker(config.GOODMAN_STICKERS[random.randint(0, 6)])
 
 async def pr_get_lesh(bot, callback_query: types.CallbackQuery):
     file = types.InputFile(media_file_path + 'lesh.png')
