@@ -121,7 +121,7 @@ async def pr_get_horoscope(bot, callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
-async def get_sticker(message: types.Message):
+async def get_message_answer(bot, message: types.Message):
     if message.text.lower().find('ахах') != -1:
         await message.answer_sticker(config.FUNY_STICKERS[random.randint(0, 18)])
     elif message.text.lower().find('пиздец') != -1:
@@ -132,6 +132,41 @@ async def get_sticker(message: types.Message):
         await message.answer_sticker(config.SLEEP_STICKERS[random.randint(0, 15)])
     elif message.text == '+':
         await message.answer('+')
+    elif message.text.lower().find('поедем') != -1 and message.text.lower().find('кушать') != -1:
+        await message.answer(config.EAT_PLACES[random.randint(0, 3)])
+    elif check_fix(message.text):
+        await pr_fix(bot, message)
+
+
+def check_fix(text):
+    if text.lower().find('почините') != -1:
+        return True
+    elif text.lower().find('почини') != -1:
+        return True
+    elif text.lower().find('починить') != -1:
+        return True
+    elif text.lower().find('поправить') != -1:
+        return True
+    elif text.lower().find('поправь') != -1:
+        return True
+    elif text.lower().find('поправте') != -1:
+        return True
+    elif text.lower().find('исправь') != -1:
+        return True
+    elif text.lower().find('исправить') != -1:
+        return True
+    elif text.lower().find('исправте') != -1:
+        return True
+    else:
+        return False
+
+async def pr_fix(bot, message: types.Message):
+    file = types.InputFile(media_file_path + 'fix.jpg')
+    await bot.send_photo(
+        message.chat.id,
+        file,
+        caption='Ща починим'
+    )
 
 
 async def pr_get_lesh(bot, callback_query: types.CallbackQuery):

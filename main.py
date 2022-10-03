@@ -37,8 +37,8 @@ async def fuck_you(callback_query: types.CallbackQuery):
 
 
 @dp.message_handler()
-async def get_sticker(message: types.Message):
-    await hand.get_sticker(message)
+async def get_message_answer(message: types.Message):
+    await hand.get_message_answer(bot, message)
 
 
 if __name__ == '__main__':

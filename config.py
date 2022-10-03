@@ -87,3 +87,10 @@ SLEEP_STICKERS = [
     r'CAACAgIAAxkBAAEF_HJjOm9AXlyygdAGHCdvN-g9eK9-bgACGRoAAi-zUUjyclAxFOQVKSoE',
     r'CAACAgIAAxkBAAEF_HRjOm9M309Udymk0QrjQOJ5dSTI5wACVxkAAuzuWUnT3ys-fz4oUyoE'
 ]
+
+EAT_PLACES = [
+    'Едем в аймол',
+    'Едем в планету',
+    'Идём в столовку',
+    'Идём в шаву'
+]
