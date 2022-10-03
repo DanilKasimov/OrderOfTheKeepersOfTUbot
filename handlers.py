@@ -146,6 +146,8 @@ async def get_message_answer(bot, message: types.Message):
         await pr_fingers(bot, message)
     elif message.text.lower().find('пидор') != -1:
         await pr_pidor(bot, message)
+    elif message.text.lower().find('пидар') != -1:
+        await pr_pidor(bot, message)
 
 
 async def pr_pidor(bot, message: types.Message):
