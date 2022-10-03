@@ -1,7 +1,6 @@
 from aiogram import types
 import os
 import DataBaseUtils
-import datetime
 import random
 import config
 import requests
@@ -39,7 +38,7 @@ async def callback_handler(bot, callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
-async def horoscope_handler(bot, callback_query: types.CallbackQuery):
+async def horoscope_zz_handler(bot, callback_query: types.CallbackQuery):
     global bot_state
     bot_state = callback_query.data
     names = config.ZODIACS.keys()
@@ -53,10 +52,25 @@ async def horoscope_handler(bot, callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
+async def horoscope_year_handler(bot, callback_query: types.CallbackQuery):
+    global bot_state
+    bot_state = callback_query.data
+    names = config.ZODIACS_YEAR.keys()
+    buttons = []
+    for i in names:
+        buttons.append(types.InlineKeyboardButton(i, callback_data=config.ZODIACS_YEAR[i]))
+    fuck_keyboard = types.InlineKeyboardMarkup()
+    for b in buttons:
+        fuck_keyboard.add(b)
+    await callback_query.message.answer('Выберите годовое животное', reply_markup=fuck_keyboard)
+    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+
+
 async def get_menu(bot, message: types.Message):
     buttons = []
     if db.check_user(message.from_user.id):
-        buttons.append(types.InlineKeyboardButton('Гороскоп', callback_data='horoscope'))
+        buttons.append(types.InlineKeyboardButton('Гороскоп по ЗЗ', callback_data='horoscope_zz'))
+        buttons.append(types.InlineKeyboardButton('Гороскоп по животному года', callback_data='horoscope_year'))
         buttons.append(types.InlineKeyboardButton('Послать нахуй', callback_data='fuck_you'))
         buttons.append(types.InlineKeyboardButton('Объявить мышью', callback_data='set_mouse'))
         buttons.append(types.InlineKeyboardButton('Сделать комплимент', callback_data='complement'))
@@ -109,7 +123,7 @@ async def pr_get_complement(bot, callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
-async def pr_get_horoscope(bot, callback_query: types.CallbackQuery):
+async def pr_get_horoscope_zz(bot, callback_query: types.CallbackQuery):
     file = types.InputFile(media_file_path + callback_query.data + '.png')
     req = requests.get(config.HOROSCOPE_URL + callback_query.data)
     soup = BeautifulSoup(req.text, features="html.parser")
@@ -117,6 +131,21 @@ async def pr_get_horoscope(bot, callback_query: types.CallbackQuery):
         callback_query.message.chat.id,
         file,
         caption=soup.find_all(id="eje_text")[0].findNext().findNext().findNext().findNext().findNext().findNext().text
+    )
+    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+
+
+async def pr_get_horoscope_year(bot, callback_query: types.CallbackQuery):
+    file = types.InputFile(media_file_path + callback_query.data + '.png')
+    req = requests.get(config.HOROSCOPE_URL + callback_query.data + '/')
+    soup = BeautifulSoup(req.text, features="html.parser")
+    capt = ''
+    for i in soup.find_all('p'):
+        capt += str(i).replace('<p>', '').replace('</p>', '') + '\n'
+    await bot.send_photo(
+        callback_query.message.chat.id,
+        file,
+        caption=capt
     )
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
@@ -165,6 +194,7 @@ async def pr_fingers(bot, message: types.Message):
         file
     )
 
+
 async def pr_replay(bot, message: types.Message):
     file = types.InputFile(media_file_path + 'replay.jpg')
     login = db.get_user_login(message.from_user.id)
@@ -174,6 +204,7 @@ async def pr_replay(bot, message: types.Message):
         caption=f'@{login} красава'
     )
 
+
 async def pr_search(bot, message: types.Message):
     file = types.InputFile(media_file_path + 'search.jpg')
     login = db.get_user_login(message.from_user.id)
@@ -182,6 +213,7 @@ async def pr_search(bot, message: types.Message):
         file,
         caption=f'Давайте поможем @{login} найти то, что нужно'
     )
+
 
 def check_fix(text):
     if text.lower().find('правь') != -1:
@@ -196,6 +228,7 @@ def check_fix(text):
         return True
     else:
         return False
+
 
 async def pr_fix(bot, message: types.Message):
     file = types.InputFile(media_file_path + 'fix.jpg')
@@ -227,9 +260,12 @@ async def command_handler(bot, callback_query: types.CallbackQuery):
     elif bot_state == 'complement':
         bot_state = 'Simple'
         await pr_get_complement(bot, callback_query)
-    elif bot_state == 'horoscope':
+    elif bot_state == 'horoscope_zz':
         bot_state = 'Simple'
-        await pr_get_horoscope(bot, callback_query)
+        await pr_get_horoscope_zz(bot, callback_query)
+    elif bot_state == 'horoscope_year':
+        bot_state = 'Simple'
+        await pr_get_horoscope_year(bot, callback_query)
     elif bot_state == 'lesh':
         bot_state = 'Simple'
         await pr_get_lesh(bot, callback_query)

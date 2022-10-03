@@ -2,6 +2,8 @@ BOT_API_TOKEN = '5775245125:AAGFxKnUcz-nH9q4nABWIP-8JzKB5Y5eDiQ'
 
 HOROSCOPE_URL = 'https://1001goroskop.ru/?znak='
 
+HOROSCOPE_YEAR_URL = 'https://moigoroskop.org/vostochnyi-goroskop/'
+
 ZODIACS = {
     'Овен': 'aries',
     'Телец': 'taurus',
@@ -15,6 +17,21 @@ ZODIACS = {
     'Козерог': 'capricorn',
     'Водолей': 'aquarius',
     'Рыбы': 'pisces'
+}
+
+ZODIACS_YEAR = {
+    'Бык': 'byk',
+    'Дракон': 'drakon',
+    'Кабан': 'kaban',
+    'Коза': 'koza',
+    'Кролик': 'krolik',
+    'Крыса': 'krysa',
+    'Лошадь': 'loshad',
+    'Обезьяна': 'obezyana',
+    'Петух': 'petuh',
+    'Собака': 'sobaka',
+    'Водолей': 'tigr',
+    'Змея': 'zmeya'
 }
 
 FUNY_STICKERS = [

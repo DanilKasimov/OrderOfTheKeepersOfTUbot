@@ -6,9 +6,14 @@ bot = Bot(token=config.BOT_API_TOKEN)
 dp = Dispatcher(bot)
 
 
-@dp.callback_query_handler(lambda c: c.data == 'horoscope')
+@dp.callback_query_handler(lambda c: c.data == 'horoscope_zz')
 async def callback_horoscope(callback_query: types.CallbackQuery):
-    await hand.horoscope_handler(bot, callback_query)
+    await hand.horoscope_zz_handler(bot, callback_query)
+
+
+@dp.callback_query_handler(lambda c: c.data == 'horoscope_year')
+async def callback_horoscope(callback_query: types.CallbackQuery):
+    await hand.horoscope_year_handler(bot, callback_query)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'registration')
