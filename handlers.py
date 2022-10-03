@@ -140,6 +140,8 @@ async def get_message_answer(bot, message: types.Message):
         await pr_search(bot, message)
     elif message.text.lower().find('переиграл') != -1:
         await pr_replay(bot, message)
+    elif message.text.lower().find('бубу') != -1:
+        await message.answer_sticker(config.BUBU_STICKERS[random.randint(0, 5)])
 
 
 async def pr_replay(bot, message: types.Message):
