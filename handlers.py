@@ -136,7 +136,17 @@ async def get_message_answer(bot, message: types.Message):
         await message.answer(config.EAT_PLACES[random.randint(0, 3)])
     elif check_fix(message.text):
         await pr_fix(bot, message)
+    elif message.text.lower().find('где') != -1 and message.text.lower().find('?') != -1:
+        await pr_search(bot, message)
 
+async def pr_search(bot, message: types.Message):
+    file = types.InputFile(media_file_path + 'search.jpg')
+    login = db.get_user_login(message.from_user.id)
+    await bot.send_photo(
+        message.chat.id,
+        file,
+        caption=f'Давайте поможем @{login} найти то, что нужно'
+    )
 
 def check_fix(text):
     if text.lower().find('правь') != -1:
