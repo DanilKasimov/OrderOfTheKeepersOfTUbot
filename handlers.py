@@ -142,7 +142,16 @@ async def get_message_answer(bot, message: types.Message):
         await pr_replay(bot, message)
     elif message.text.lower().find('бубу') != -1:
         await message.answer_sticker(config.BUBU_STICKERS[random.randint(0, 5)])
+    elif message.text.find('👉👈') != -1:
+        await pr_fingers(bot, message)
 
+
+async def pr_fingers(bot, message: types.Message):
+    file = types.InputFile(media_file_path + 'fingers.jpg')
+    await bot.send_photo(
+        message.chat.id,
+        file
+    )
 
 async def pr_replay(bot, message: types.Message):
     file = types.InputFile(media_file_path + 'replay.jpg')
