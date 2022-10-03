@@ -144,6 +144,16 @@ async def get_message_answer(bot, message: types.Message):
         await message.answer_sticker(config.BUBU_STICKERS[random.randint(0, 5)])
     elif message.text.find('👉👈') != -1:
         await pr_fingers(bot, message)
+    elif message.text.lower().find('пидарас') != -1:
+        await pr_pidor(bot, message)
+
+
+async def pr_pidor(bot, message: types.Message):
+    file = types.InputFile(media_file_path + 'pidor.jpg')
+    await bot.send_photo(
+        message.chat.id,
+        file
+    )
 
 
 async def pr_fingers(bot, message: types.Message):
