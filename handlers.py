@@ -77,7 +77,11 @@ async def get_start(bot, message: types.Message):
 
 
 async def pr_fuck_you(bot, callback_query: types.CallbackQuery):
-    await callback_query.message.answer(f'@{callback_query.data} получает путёвку нахуй')
+    if callback_query.data == 'OrderOfTheKeeperOfTUbot':
+        login = db.get_user_login(callback_query.from_user.id)
+        await callback_query.message.answer(f'@{login} сам пошёл нахуй')
+    else:
+        await callback_query.message.answer(f'@{callback_query.data} получает путёвку нахуй')
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -124,6 +128,11 @@ async def get_sticker(message: types.Message):
         await message.answer_sticker(config.SHOCK_STICKERS[random.randint(0, 16)])
     elif message.text.lower().find('хорош') != -1:
         await message.answer_sticker(config.GOODMAN_STICKERS[random.randint(0, 6)])
+    elif message.text.lower().find('спать') != -1:
+        await message.answer_sticker(config.SLEEP_STICKERS[random.randint(0, 15)])
+    elif message.text == '+':
+        await message.answer('+')
+
 
 async def pr_get_lesh(bot, callback_query: types.CallbackQuery):
     file = types.InputFile(media_file_path + 'lesh.png')
