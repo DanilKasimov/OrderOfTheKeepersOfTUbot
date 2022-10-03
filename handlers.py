@@ -60,6 +60,7 @@ async def get_menu(bot, message: types.Message):
         buttons.append(types.InlineKeyboardButton('Послать нахуй', callback_data='fuck_you'))
         buttons.append(types.InlineKeyboardButton('Объявить мышью', callback_data='set_mouse'))
         buttons.append(types.InlineKeyboardButton('Сделать комплимент', callback_data='complement'))
+        buttons.append(types.InlineKeyboardButton('Дать леща', callback_data='lesh'))
     else:
         buttons.append(types.InlineKeyboardButton('Регистрация', callback_data='registration'))
     main_keyboard = types.InlineKeyboardMarkup()
@@ -121,6 +122,16 @@ async def get_sticker(message: types.Message):
         await message.answer_sticker(config.STICKERS[random.randint(0, 18)])
 
 
+async def pr_get_lesh(bot, callback_query: types.CallbackQuery):
+    file = types.InputFile(media_file_path + 'lesh.png')
+    await bot.send_photo(
+        callback_query.message.chat.id,
+        file,
+        caption=f'@{callback_query.data} получает леща'
+    )
+    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+
+
 async def command_handler(bot, callback_query: types.CallbackQuery):
     global bot_state
     if bot_state == 'fuck_you':
@@ -135,3 +146,6 @@ async def command_handler(bot, callback_query: types.CallbackQuery):
     elif bot_state == 'horoscope':
         bot_state = 'Simple'
         await pr_get_horoscope(bot, callback_query)
+    elif bot_state == 'lesh':
+        bot_state = 'Simple'
+        await pr_get_lesh(bot, callback_query)
