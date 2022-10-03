@@ -145,6 +145,8 @@ def check_fix(text):
         return True
     elif text.lower().find('правте') != -1:
         return True
+    elif text.lower().find('правишь') != -1:
+        return True
     elif text.lower().find('чини') != -1:
         return True
     else:
