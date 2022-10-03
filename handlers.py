@@ -139,23 +139,13 @@ async def get_message_answer(bot, message: types.Message):
 
 
 def check_fix(text):
-    if text.lower().find('почините') != -1:
+    if text.lower().find('правь') != -1:
         return True
-    elif text.lower().find('почини') != -1:
+    elif text.lower().find('править') != -1:
         return True
-    elif text.lower().find('починить') != -1:
+    elif text.lower().find('правте') != -1:
         return True
-    elif text.lower().find('поправить') != -1:
-        return True
-    elif text.lower().find('поправь') != -1:
-        return True
-    elif text.lower().find('поправте') != -1:
-        return True
-    elif text.lower().find('исправь') != -1:
-        return True
-    elif text.lower().find('исправить') != -1:
-        return True
-    elif text.lower().find('исправте') != -1:
+    elif text.lower().find('чини') != -1:
         return True
     else:
         return False
