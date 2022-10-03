@@ -138,6 +138,18 @@ async def get_message_answer(bot, message: types.Message):
         await pr_fix(bot, message)
     elif message.text.lower().find('где') != -1 and message.text.lower().find('?') != -1:
         await pr_search(bot, message)
+    elif message.text.lower().find('переиграл') != -1:
+        await pr_replay(bot, message)
+
+
+async def pr_replay(bot, message: types.Message):
+    file = types.InputFile(media_file_path + 'replay.jpg')
+    login = db.get_user_login(message.from_user.id)
+    await bot.send_photo(
+        message.chat.id,
+        file,
+        caption=f'@{login} красава'
+    )
 
 async def pr_search(bot, message: types.Message):
     file = types.InputFile(media_file_path + 'search.jpg')
