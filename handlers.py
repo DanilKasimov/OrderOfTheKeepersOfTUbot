@@ -14,6 +14,13 @@ start_button = types.KeyboardButton('/Старт')
 start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True).add(start_button)
 
 
+async def get_fura(bot, message: types.Message):
+    await bot.send_voice(
+        message.chat.id,
+        voice=types.InputFile(media_file_path + 'easter.mp3')
+    )
+
+
 async def registration_user(bot, callback_query: types.CallbackQuery):
     db.insert_user(
         callback_query.from_user.id,
@@ -177,6 +184,8 @@ async def get_message_answer(bot, message: types.Message):
         await pr_pidor(bot, message)
     elif message.text.lower().find('пидар') != -1:
         await pr_pidor(bot, message)
+    elif message.text.lower().find('шок') != -1:
+        await get_fura(bot, message)
 
 
 async def pr_pidor(bot, message: types.Message):
