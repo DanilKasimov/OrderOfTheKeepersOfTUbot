@@ -26,6 +26,7 @@ ZODIACS_YEAR = {
     'Коза': 'koza',
     'Кролик': 'krolik',
     'Крыса': 'krysa',
+    'Тигр': 'tigr',
     'Лошадь': 'loshad',
     'Обезьяна': 'obezyana',
     'Петух': 'petuh',
