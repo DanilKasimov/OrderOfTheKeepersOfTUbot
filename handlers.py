@@ -160,31 +160,31 @@ async def pr_get_horoscope_year(bot, callback_query: types.CallbackQuery):
 async def get_message_answer(bot, message: types.Message):
     if message.text.lower().find('ахах') != -1:
         await message.answer_sticker(config.FUNY_STICKERS[random.randint(0, 18)])
-    elif message.text.lower().find('пиздец') != -1:
+    if message.text.lower().find('пиздец') != -1:
         await message.answer_sticker(config.SHOCK_STICKERS[random.randint(0, 16)])
-    elif message.text.lower().find('хорош') != -1:
+    if message.text.lower().find('хорош') != -1:
         await message.answer_sticker(config.GOODMAN_STICKERS[random.randint(0, 6)])
-    elif message.text.lower().find('спать') != -1:
+    if message.text.lower().find('спать') != -1:
         await message.answer_sticker(config.SLEEP_STICKERS[random.randint(0, 15)])
-    elif message.text == '+':
+    if message.text == '+':
         await message.answer('+')
-    elif message.text.lower().find('поедем') != -1 and message.text.lower().find('кушать') != -1:
+    if message.text.lower().find('поедем') != -1 and message.text.lower().find('кушать') != -1:
         await message.answer(config.EAT_PLACES[random.randint(0, 3)])
-    elif check_fix(message.text):
+    if check_fix(message.text):
         await pr_fix(bot, message)
-    elif message.text.lower().find('где') != -1 and message.text.lower().find('?') != -1:
+    if message.text.lower().find('где') != -1 and message.text.lower().find('?') != -1:
         await pr_search(bot, message)
-    elif message.text.lower().find('переиграл') != -1:
+    if message.text.lower().find('переиграл') != -1:
         await pr_replay(bot, message)
-    elif message.text.lower().find('бубу') != -1:
+    if message.text.lower().find('бубу') != -1:
         await message.answer_sticker(config.BUBU_STICKERS[random.randint(0, 5)])
-    elif message.text.find('👉👈') != -1:
+    if message.text.find('👉👈') != -1:
         await pr_fingers(bot, message)
-    elif message.text.lower().find('пидор') != -1:
+    if message.text.lower().find('пидор') != -1:
         await pr_pidor(bot, message)
-    elif message.text.lower().find('пидар') != -1:
+    if message.text.lower().find('пидар') != -1:
         await pr_pidor(bot, message)
-    elif message.text.lower().find('шок') != -1:
+    if message.text.lower().find('шок') != -1:
         await get_fura(bot, message)
 
 
