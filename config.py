@@ -31,7 +31,6 @@ ZODIACS_YEAR = {
     'Обезьяна': 'obezyana',
     'Петух': 'petuh',
     'Собака': 'sobaka',
-    'Водолей': 'tigr',
     'Змея': 'zmeya'
 }
 
