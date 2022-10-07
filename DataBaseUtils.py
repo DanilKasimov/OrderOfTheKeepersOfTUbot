@@ -17,6 +17,13 @@ class DbConnection:
                             name TEXT
                         )
                     """)
+            cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS logs (
+                            login TEXT,
+                            action TEXT,
+                            date TEXT
+                        )
+                    """)
             connection.commit()
 
     def check_user(self, user_id):
@@ -75,5 +82,20 @@ class DbConnection:
             cursor.close()
             connection.close()
             return result[0][0]
+        else:
+            print('Error!! DataBase don`t exists')
+    def insert_log(self, login, action):
+        if os.path.isfile(self.db_name):
+            connection = sqlite3.connect(self.db_name)
+            cursor = connection.cursor()
+            cursor.execute(
+                f"""
+                    INSERT INTO logs(login, action, date) 
+                    VALUES('{login}', '{action}', '{datetime.datetime.now().strftime('%m/%d/%Y')}')
+                """
+            )
+            connection.commit()
+            cursor.close()
+            connection.close()
         else:
             print('Error!! DataBase don`t exists')

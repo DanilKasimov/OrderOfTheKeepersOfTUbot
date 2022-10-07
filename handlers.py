@@ -101,8 +101,10 @@ async def pr_fuck_you(bot, callback_query: types.CallbackQuery):
     if callback_query.data == 'OrderOfTheKeeperOfTUbot':
         login = db.get_user_login(callback_query.from_user.id)
         await callback_query.message.answer(f'@{login} сам пошёл нахуй')
+        db.insert_log(login, 'hui')
     else:
         await callback_query.message.answer(f'@{callback_query.data} получает путёвку нахуй')
+        db.insert_log(callback_query.data, 'hui')
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -117,6 +119,7 @@ async def pr_set_mouse(bot, callback_query: types.CallbackQuery):
         file,
         caption=f'@{callback_query.data} с этого момента официально считается мышью'
     )
+    db.insert_log(callback_query.data, 'mouse')
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -127,6 +130,7 @@ async def pr_get_complement(bot, callback_query: types.CallbackQuery):
         file,
         caption=f'@{callback_query.data} ну просто волшебная булочка с корицей'
     )
+    db.insert_log(callback_query.data, 'cool')
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
