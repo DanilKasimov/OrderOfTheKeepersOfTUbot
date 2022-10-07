@@ -21,7 +21,7 @@ async def callback_registration(callback_query: types.CallbackQuery):
     await hand.registration_user(bot, callback_query)
 
 
-@dp.callback_query_handler(lambda c: c.data in ['fuck_you', 'set_mouse', 'complement', 'lesh'])
+@dp.callback_query_handler(lambda c: c.data in ['fuck_you', 'set_mouse', 'complement', 'lesh', 'statistic'])
 async def callback_handler(callback_query: types.CallbackQuery):
     await hand.callback_handler(bot, callback_query)
 

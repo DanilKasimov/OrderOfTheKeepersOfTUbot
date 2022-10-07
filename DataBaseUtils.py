@@ -99,3 +99,20 @@ class DbConnection:
             connection.close()
         else:
             print('Error!! DataBase don`t exists')
+    def get_statistic(self, login):
+        if os.path.isfile(self.db_name):
+            connection = sqlite3.connect(self.db_name)
+            cursor = connection.cursor()
+            cursor.execute(
+                f"""
+                    SELECT action, date
+                    FROM logs 
+                    WHERE login = '{login}'
+                """
+            )
+            result = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return result
+        else:
+            print('Error!! DataBase don`t exists')

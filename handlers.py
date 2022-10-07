@@ -33,16 +33,19 @@ async def registration_user(bot, callback_query: types.CallbackQuery):
 
 async def callback_handler(bot, callback_query: types.CallbackQuery):
     global bot_state
-    bot_state = callback_query.data
-    users = db.get_all_users()
-    buttons = []
-    for i in users:
-        buttons.append(types.InlineKeyboardButton(i[2], callback_data=i[1]))
-    fuck_keyboard = types.InlineKeyboardMarkup()
-    for b in buttons:
-        fuck_keyboard.add(b)
-    await callback_query.message.answer('Выберите пользователя', reply_markup=fuck_keyboard)
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    if callback_query.data == 'statistic':
+        await pr_get_statistic(bot, callback_query)
+    else:
+        bot_state = callback_query.data
+        users = db.get_all_users()
+        buttons = []
+        for i in users:
+            buttons.append(types.InlineKeyboardButton(i[2], callback_data=i[1]))
+        fuck_keyboard = types.InlineKeyboardMarkup()
+        for b in buttons:
+            fuck_keyboard.add(b)
+        await callback_query.message.answer('Выберите пользователя', reply_markup=fuck_keyboard)
+        await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
 async def horoscope_zz_handler(bot, callback_query: types.CallbackQuery):
@@ -82,6 +85,7 @@ async def get_menu(bot, message: types.Message):
         buttons.append(types.InlineKeyboardButton('Объявить мышью', callback_data='set_mouse'))
         buttons.append(types.InlineKeyboardButton('Сделать комплимент', callback_data='complement'))
         buttons.append(types.InlineKeyboardButton('Дать леща', callback_data='lesh'))
+        buttons.append(types.InlineKeyboardButton('Статистика', callback_data='statistic'))
     else:
         buttons.append(types.InlineKeyboardButton('Регистрация', callback_data='registration'))
     main_keyboard = types.InlineKeyboardMarkup()
@@ -259,6 +263,37 @@ async def pr_get_lesh(bot, callback_query: types.CallbackQuery):
         file,
         caption=f'@{callback_query.data} получает леща'
     )
+    db.insert_log(callback_query.data, 'lesh')
+    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+
+async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
+    users = db.get_all_users()
+    for user in users:
+        result = ''
+        stats = db.get_statistic(user[1])
+        cnt_hui = 0
+        cnt_mouse = 0
+        cnt_cool = 0
+        cnt_lesh = 0
+        for stat in stats:
+            if stat[0] == 'hui':
+                cnt_hui += 1
+            elif stat[0] == 'mouse':
+                cnt_mouse += 1
+            elif stat[0] == 'cool':
+                cnt_cool += 1
+            elif stat[0] == 'lesh':
+                cnt_lesh += 1
+        if cnt_mouse > 0:
+            result += f'@{user[1]} был(а) назван(а) мышью {cnt_mouse} раз(а)\n'
+        if cnt_cool > 0:
+            result += f'@{user[1]} получил(а) комплимент {cnt_cool} раз(а)\n'
+        if cnt_hui > 0:
+            result += f'@{user[1]} был(а) послан(а) нахуй {cnt_hui} раз(а)\n'
+        if cnt_lesh > 0:
+            result += f'@{user[1]} получил(а) леща {cnt_lesh} раз(а)\n'
+        if result != '':
+            await callback_query.message.answer(result)
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
