@@ -110,6 +110,10 @@ async def pr_fuck_you(bot, callback_query: types.CallbackQuery):
     else:
         await callback_query.message.answer(f'@{callback_query.data} получает путёвку нахуй')
         db.insert_log(callback_query.data, 'hui')
+    await bot.send_voice(
+        callback_query.message.chat.id,
+        voice=types.InputFile(media_file_path + 'fuck-you.mp3')
+    )
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -134,6 +138,10 @@ async def pr_set_mouse(bot, callback_query: types.CallbackQuery):
             caption=f'@{callback_query.data} с этого момента официально считается мышью'
         )
         db.insert_log(callback_query.data, 'mouse')
+    await bot.send_voice(
+        callback_query.message.chat.id,
+        voice=types.InputFile(media_file_path + 'mouse-voice.mp3')
+    )
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -145,6 +153,10 @@ async def pr_get_complement(bot, callback_query: types.CallbackQuery):
         caption=f'@{callback_query.data} ну просто волшебная булочка с корицей'
     )
     db.insert_log(callback_query.data, 'cool')
+    await bot.send_voice(
+        callback_query.message.chat.id,
+        voice=types.InputFile(media_file_path + 'uwu-voice.mp3')
+    )
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -210,6 +222,14 @@ async def get_message_answer(bot, message: types.Message):
         await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
     if message.text.lower().find('плак') != -1:
         await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
+    if message.text.lower().find('похуй') != -1:
+        await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
+    if message.text.lower().find('поебать') != -1:
+        await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
+    if message.text.lower().find('плевать') != -1:
+        await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
+    if message.text.lower().find('без разницы') != -1:
+        await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
 
 
 
@@ -227,6 +247,7 @@ async def pr_fingers(bot, message: types.Message):
         message.chat.id,
         file
     )
+
 
 
 async def pr_replay(bot, message: types.Message):
