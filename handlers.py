@@ -6,6 +6,7 @@ import config
 import requests
 from bs4 import BeautifulSoup
 
+
 db = DataBaseUtils.DbConnection('OrderBot.db')
 banned_users = {}
 bot_state = 'Simple'
@@ -317,3 +318,41 @@ async def command_handler(bot, callback_query: types.CallbackQuery):
     elif bot_state == 'lesh':
         bot_state = 'Simple'
         await pr_get_lesh(bot, callback_query)
+
+
+
+#import time
+#
+#import torch
+#import sounddevice as sd
+#
+#
+#t_language = 'ru'
+#t_model_id = 'ru_v3'
+#t_sample_rate = 48000
+#t_speaker = 'baya'
+#t_put_accent = True
+#t_put_yoo = True
+#device = torch.device('cpu')
+#text = 'Привет, я архимаг ордена хранителей ТУ, Мегумин'
+#
+#model, _ = torch.hub.load(
+#    repo_or_dir='snakers4/silero-models',
+#    model='silero_tts',
+#    language=t_language,
+#    speaker=t_model_id
+#)
+#
+#audio = model.apply_tts(
+#    text=text,
+#    speaker=t_speaker,
+#    sample_rate=t_sample_rate,
+#    put_accent=t_put_accent,
+#    put_yo=t_put_yoo
+#)
+#
+#print(text)
+#
+#sd.play(audio, t_sample_rate)
+#time.sleep(len(audio) / t_sample_rate)
+#sd.stop()
