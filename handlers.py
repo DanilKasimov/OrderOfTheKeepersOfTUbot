@@ -119,12 +119,21 @@ async def pr_set_mouse(bot, callback_query: types.CallbackQuery):
         file = types.InputFile(media_file_path + 'mouse_' + str(number) + '.jpg')
     else:
         file = types.InputFile(media_file_path + 'мышь.jpg')
-    await bot.send_photo(
-        callback_query.message.chat.id,
-        file,
-        caption=f'@{callback_query.data} с этого момента официально считается мышью'
-    )
-    db.insert_log(callback_query.data, 'mouse')
+    if callback_query.data == 'OrderOfTheKeeperOfTUbot':
+        login = db.get_user_login(callback_query.from_user.id)
+        await bot.send_photo(
+            callback_query.message.chat.id,
+            file,
+            caption=f'@{login} сам мышь'
+        )
+        db.insert_log(login, 'mouse')
+    else:
+        await bot.send_photo(
+            callback_query.message.chat.id,
+            file,
+            caption=f'@{callback_query.data} с этого момента официально считается мышью'
+        )
+        db.insert_log(callback_query.data, 'mouse')
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
@@ -168,17 +177,17 @@ async def pr_get_horoscope_year(bot, callback_query: types.CallbackQuery):
 
 async def get_message_answer(bot, message: types.Message):
     if message.text.lower().find('ахах') != -1:
-        await message.answer_sticker(config.FUNY_STICKERS[random.randint(0, 18)])
+        await message.answer_sticker(config.FUNY_STICKERS[random.randint(0, len(config.FUNY_STICKERS) - 1)])
     if message.text.lower().find('пиздец') != -1:
-        await message.answer_sticker(config.SHOCK_STICKERS[random.randint(0, 16)])
+        await message.answer_sticker(config.SHOCK_STICKERS[random.randint(0, len(config.SHOCK_STICKERS) - 1)])
     if message.text.lower().find('хорош') != -1:
-        await message.answer_sticker(config.GOODMAN_STICKERS[random.randint(0, 6)])
+        await message.answer_sticker(config.GOODMAN_STICKERS[random.randint(0, len(config.GOODMAN_STICKERS) - 1)])
     if message.text.lower().find('спать') != -1:
-        await message.answer_sticker(config.SLEEP_STICKERS[random.randint(0, 15)])
+        await message.answer_sticker(config.SLEEP_STICKERS[random.randint(0, len(config.SLEEP_STICKERS) - 1)])
     if message.text == '+':
         await message.answer('+')
     if message.text.lower().find('поедем') != -1 and message.text.lower().find('кушать') != -1:
-        await message.answer(config.EAT_PLACES[random.randint(0, 3)])
+        await message.answer(config.EAT_PLACES[random.randint(0, len(config.EAT_PLACES) - 1)])
     if check_fix(message.text):
         await pr_fix(bot, message)
     if message.text.lower().find('где') != -1 and message.text.lower().find('?') != -1:
@@ -186,7 +195,7 @@ async def get_message_answer(bot, message: types.Message):
     if message.text.lower().find('переиграл') != -1:
         await pr_replay(bot, message)
     if message.text.lower().find('бубу') != -1:
-        await message.answer_sticker(config.BUBU_STICKERS[random.randint(0, 5)])
+        await message.answer_sticker(config.BUBU_STICKERS[random.randint(0, len(config.BUBU_STICKERS) - 1)])
     if message.text.find('👉👈') != -1:
         await pr_fingers(bot, message)
     if message.text.lower().find('пидор') != -1:
@@ -195,6 +204,13 @@ async def get_message_answer(bot, message: types.Message):
         await pr_pidor(bot, message)
     if message.text.lower().find('шок') != -1:
         await get_fura(bot, message)
+    if message.text.lower().find('((') != -1:
+        await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
+    if message.text.lower().find('грусть') != -1:
+        await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
+    if message.text.lower().find('плак') != -1:
+        await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
+
 
 
 async def pr_pidor(bot, message: types.Message):
@@ -259,12 +275,21 @@ async def pr_fix(bot, message: types.Message):
 
 async def pr_get_lesh(bot, callback_query: types.CallbackQuery):
     file = types.InputFile(media_file_path + 'lesh.png')
-    await bot.send_photo(
-        callback_query.message.chat.id,
-        file,
-        caption=f'@{callback_query.data} получает леща'
-    )
-    db.insert_log(callback_query.data, 'lesh')
+    if callback_query.data == 'OrderOfTheKeeperOfTUbot':
+        login = db.get_user_login(callback_query.from_user.id)
+        await bot.send_photo(
+            callback_query.message.chat.id,
+            file,
+            caption=f'@{login} сам получает леща'
+        )
+        db.insert_log(login, 'mouse')
+    else:
+        await bot.send_photo(
+            callback_query.message.chat.id,
+            file,
+            caption=f'@{callback_query.data} получает леща'
+        )
+        db.insert_log(callback_query.data, 'lesh')
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
