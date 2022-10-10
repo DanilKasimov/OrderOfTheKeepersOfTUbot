@@ -81,7 +81,7 @@ async def get_menu(bot, message: types.Message):
     buttons = []
     if db.check_user(message.from_user.id):
         buttons.append(types.InlineKeyboardButton('Гороскоп по ЗЗ', callback_data='horoscope_zz'))
-        buttons.append(types.InlineKeyboardButton('Гороскоп по животному года', callback_data='horoscope_year'))
+        #buttons.append(types.InlineKeyboardButton('Гороскоп по животному года', callback_data='horoscope_year'))
         buttons.append(types.InlineKeyboardButton('Послать нахуй', callback_data='fuck_you'))
         buttons.append(types.InlineKeyboardButton('Объявить мышью', callback_data='set_mouse'))
         buttons.append(types.InlineKeyboardButton('Сделать комплимент', callback_data='complement'))
