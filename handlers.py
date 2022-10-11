@@ -153,10 +153,16 @@ async def pr_get_complement(bot, callback_query: types.CallbackQuery):
         caption=f'@{callback_query.data} ну просто волшебная булочка с корицей'
     )
     db.insert_log(callback_query.data, 'cool')
-    await bot.send_voice(
-        callback_query.message.chat.id,
-        voice=types.InputFile(media_file_path + 'uwu-voice.mp3')
-    )
+    if callback_query.data == 'OrderOfTheKeeperOfTUbot':
+        await bot.send_voice(
+            callback_query.message.chat.id,
+            voice=types.InputFile(media_file_path + 'kudasai.mp3')
+        )
+    else:
+        await bot.send_voice(
+            callback_query.message.chat.id,
+            voice=types.InputFile(media_file_path + 'uwu-voice.mp3')
+        )
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
