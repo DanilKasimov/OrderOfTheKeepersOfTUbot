@@ -205,7 +205,27 @@ async def get_message_answer(bot, message: types.Message):
     if message.text == '+':
         await message.answer('+')
     if message.text.lower().find('поедем') != -1 and message.text.lower().find('кушать') != -1:
-        await message.answer(config.EAT_PLACES[random.randint(0, len(config.EAT_PLACES) - 1)])
+        ver = random.randint(0, 100)
+        if 0 <= ver < 22:
+            await message.answer('Едем в аймолл')
+        elif 22 <= ver < 44:
+            await message.answer('Едем в планету')
+        elif 44 <= ver < 66:
+            await message.answer('Идём в шаву')
+        elif 66 <= ver < 88:
+            await message.answer('Идём в столовку')
+        elif 88 <= ver < 90:
+            await message.answer('Едим раков')
+        elif 90 <= ver < 92:
+            await message.answer('Едим роллы')
+        elif 92 <= ver < 94:
+            await message.answer('Едим смузи')
+        elif 94 <= ver < 96:
+            await message.answer('Едим богатырскую')
+        elif 96 <= ver < 98:
+            await message.answer('Едим пиццамен')
+        else:
+            await message.answer('Шашлыкофф')
     if check_fix(message.text):
         await pr_fix(bot, message)
     if message.text.lower().find('где') != -1 and message.text.lower().find('?') != -1:
