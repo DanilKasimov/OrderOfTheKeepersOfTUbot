@@ -15,6 +15,13 @@ start_button = types.KeyboardButton('/Старт')
 start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True).add(start_button)
 
 
+def get_note(ticket):
+    req = requests.get(
+        'https://ticket.ertelecom.ru/rest/api/latest/issue/' + ticket,
+        auth=('service_eqm_jira', 'MYgFRh2dTA')
+    )
+    return f'Описание задачи {ticket} ({req.json()["fields"]["summary"]}):\n{req.json()["fields"]["description"]}'
+
 async def get_fura(bot, message: types.Message):
     await bot.send_voice(
         message.chat.id,
@@ -256,6 +263,33 @@ async def get_message_answer(bot, message: types.Message):
         await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
     if message.text.lower().find('без разницы') != -1:
         await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
+    if message.text.lower().find('когди') != -1:
+        await pr_cogdis(bot, message)
+    if message.text.find('https://ticket.ertelecom.ru/browse/') != -1:
+        if message.text.find(' ', message.text.find('browse/')) != -1:
+            await message.answer(get_note(message.text[message.text.find('browse/') + 7:message.text.find(' ', message.text.find('browse/'))]))
+        else:
+            await message.answer(get_note(message.text[message.text.find('browse/') + 7:]))
+
+async def pr_cogdis(bot, message: types.Message):
+    file = types.InputFile(media_file_path + 'cogdish.jpg')
+    await bot.send_photo(
+        message.chat.id,
+        file,
+        caption='Когдить'
+    )
+    file = types.InputFile(media_file_path + 'zrist.jpg')
+    await bot.send_photo(
+        message.chat.id,
+        file,
+        caption='По-жристиански'
+    )
+    file = types.InputFile(media_file_path + 'garold.png')
+    await bot.send_photo(
+        message.chat.id,
+        file,
+        caption='Это круто'
+    )
 
 
 
