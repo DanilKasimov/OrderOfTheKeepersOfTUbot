@@ -20,7 +20,10 @@ def get_note(ticket):
         'https://ticket.ertelecom.ru/rest/api/latest/issue/' + ticket,
         auth=('service_eqm_jira', 'MYgFRh2dTA')
     )
-    return f'Описание задачи {ticket} ({req.json()["fields"]["summary"]}):\n{req.json()["fields"]["description"]}'
+    if req.json()["fields"]["description"] is None:
+        return f'Описание задачи {ticket} ({req.json()["fields"]["summary"]}):\n{req.json()["fields"]["creator"]["displayName"]} хуйло не сделал описание'
+    else:
+        return f'Описание задачи {ticket} ({req.json()["fields"]["summary"]}):\n{req.json()["fields"]["description"]}'
 
 async def get_fura(bot, message: types.Message):
     await bot.send_voice(
