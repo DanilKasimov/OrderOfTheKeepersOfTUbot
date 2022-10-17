@@ -179,6 +179,17 @@ async def pr_get_complement(bot, callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
 
 
+async def pr_get_virus(bot, message: types.Message):
+    if random.randint(0, 1) == 1:
+        file = types.InputFile(media_file_path + 'avast.mp3')
+    else:
+        file = types.InputFile(media_file_path + 'kasper.mp3')
+    await bot.send_voice(
+        message.chat.id,
+        voice=file
+    )
+
+
 async def pr_get_horoscope_zz(bot, callback_query: types.CallbackQuery):
     file = types.InputFile(media_file_path + callback_query.data + '.png')
     req = requests.get(config.HOROSCOPE_URL + callback_query.data)
@@ -271,6 +282,10 @@ async def get_message_answer(bot, message: types.Message):
         await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
     if message.text.lower().find('когди') != -1:
         await pr_cogdis(bot, message)
+    if message.text.lower().find('заболел') != -1:
+        await pr_get_virus(bot, message)
+    if message.text.lower().find('болею') != -1:
+        await pr_get_virus(bot, message)
     if message.text.find('https://ticket.ertelecom.ru/browse/') != -1:
         if message.text.find(' ', message.text.find('browse/')) != -1:
             await message.answer(get_note(message.text[message.text.find('browse/') + 7:message.text.find(' ', message.text.find('browse/'))]))
