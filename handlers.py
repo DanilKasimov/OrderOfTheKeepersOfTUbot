@@ -5,6 +5,7 @@ import random
 import config
 import requests
 from bs4 import BeautifulSoup
+import datetime
 
 
 db = DataBaseUtils.DbConnection('OrderBot.db')
@@ -42,7 +43,7 @@ async def registration_user(bot, callback_query: types.CallbackQuery):
         callback_query.from_user.full_name
     )
     await callback_query.message.answer(f'Вы успешно зарегистрированы как {callback_query.from_user.full_name}')
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
 
 async def callback_handler(bot, callback_query: types.CallbackQuery):
@@ -55,11 +56,17 @@ async def callback_handler(bot, callback_query: types.CallbackQuery):
         buttons = []
         for i in users:
             buttons.append(types.InlineKeyboardButton(i[2], callback_data=i[1]))
+        buttons.append(types.InlineKeyboardButton('Бухгалтерия', callback_data='Бухгалтерия'))
+        buttons.append(types.InlineKeyboardButton('Аудиторы', callback_data='Аудиторы'))
+        buttons.append(types.InlineKeyboardButton('Мониторинг', callback_data='Мониторинг'))
+        buttons.append(types.InlineKeyboardButton('Бит', callback_data='Бит'))
+        buttons.append(types.InlineKeyboardButton('Миша', callback_data='Миша'))
+        buttons.append(types.InlineKeyboardButton('Вонючая магистраль', callback_data='Вонючая магистраль'))
         fuck_keyboard = types.InlineKeyboardMarkup()
         for b in buttons:
             fuck_keyboard.add(b)
         await callback_query.message.answer('Выберите пользователя', reply_markup=fuck_keyboard)
-        await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+        await pr_del_msg(bot, callback_query)
 
 
 async def horoscope_zz_handler(bot, callback_query: types.CallbackQuery):
@@ -73,7 +80,7 @@ async def horoscope_zz_handler(bot, callback_query: types.CallbackQuery):
     for b in buttons:
         fuck_keyboard.add(b)
     await callback_query.message.answer('Выберите знак зодиака', reply_markup=fuck_keyboard)
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
 
 async def horoscope_year_handler(bot, callback_query: types.CallbackQuery):
@@ -87,32 +94,39 @@ async def horoscope_year_handler(bot, callback_query: types.CallbackQuery):
     for b in buttons:
         fuck_keyboard.add(b)
     await callback_query.message.answer('Выберите годовое животное', reply_markup=fuck_keyboard)
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
 
 async def get_menu(bot, message: types.Message):
-    buttons = []
-    if db.check_user(message.from_user.id):
-        buttons.append(types.InlineKeyboardButton('Гороскоп по ЗЗ', callback_data='horoscope_zz'))
-        #buttons.append(types.InlineKeyboardButton('Гороскоп по животному года', callback_data='horoscope_year'))
-        buttons.append(types.InlineKeyboardButton('Послать нахуй', callback_data='fuck_you'))
-        buttons.append(types.InlineKeyboardButton('Объявить мышью', callback_data='set_mouse'))
-        buttons.append(types.InlineKeyboardButton('Сделать комплимент', callback_data='complement'))
-        buttons.append(types.InlineKeyboardButton('Дать леща', callback_data='lesh'))
-        buttons.append(types.InlineKeyboardButton('Статистика', callback_data='statistic'))
+    if check_ban(message.from_user.id):
+        buttons = []
+        if db.check_user(message.from_user.id):
+            buttons.append(types.InlineKeyboardButton('Гороскоп по ЗЗ', callback_data='horoscope_zz'))
+            #buttons.append(types.InlineKeyboardButton('Гороскоп по животному года', callback_data='horoscope_year'))
+            buttons.append(types.InlineKeyboardButton('Послать нахуй', callback_data='fuck_you'))
+            buttons.append(types.InlineKeyboardButton('Объявить мышью', callback_data='set_mouse'))
+            buttons.append(types.InlineKeyboardButton('Сделать комплимент', callback_data='complement'))
+            buttons.append(types.InlineKeyboardButton('Дать леща', callback_data='lesh'))
+            buttons.append(types.InlineKeyboardButton('Статистика', callback_data='statistic'))
+            buttons.append(types.InlineKeyboardButton('Пожелать здоровья', callback_data='pain'))
+            if message.from_user.id == 386629136:
+                buttons.append(types.InlineKeyboardButton('Забанить пользователя на 10 минут', callback_data='ban'))
+            buttons.append(types.InlineKeyboardButton('Пользователь заебал', callback_data='zaeb'))
+        else:
+            buttons.append(types.InlineKeyboardButton('Регистрация', callback_data='registration'))
+        main_keyboard = types.InlineKeyboardMarkup()
+        for b in buttons:
+            main_keyboard.add(b)
+        await message.answer('Привет, шо нада?', reply_markup=main_keyboard)
+        await bot.delete_message(message.chat.id, message.message_id)
     else:
-        buttons.append(types.InlineKeyboardButton('Регистрация', callback_data='registration'))
-    main_keyboard = types.InlineKeyboardMarkup()
-    for b in buttons:
-        main_keyboard.add(b)
-    await message.answer('Привет, шо нада?', reply_markup=main_keyboard)
-    await bot.delete_message(message.chat.id, message.message_id)
+        await bot.delete_message(message.chat.id, message.message_id)
 
 
 async def get_start(bot, message: types.Message):
     if message.from_user.id == 386629136:
         await message.answer('Меню', reply_markup=start_keyboard)
-        await bot.delete_message(message.chat.id, message.message_id)
+        await pr_del_msg(bot, callback_query)
 
 
 async def pr_fuck_you(bot, callback_query: types.CallbackQuery):
@@ -127,7 +141,7 @@ async def pr_fuck_you(bot, callback_query: types.CallbackQuery):
         callback_query.message.chat.id,
         voice=types.InputFile(media_file_path + 'fuck-you.mp3')
     )
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
 
 async def pr_set_mouse(bot, callback_query: types.CallbackQuery):
@@ -155,7 +169,7 @@ async def pr_set_mouse(bot, callback_query: types.CallbackQuery):
         callback_query.message.chat.id,
         voice=types.InputFile(media_file_path + 'mouse-voice.mp3')
     )
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
 
 async def pr_get_complement(bot, callback_query: types.CallbackQuery):
@@ -176,7 +190,7 @@ async def pr_get_complement(bot, callback_query: types.CallbackQuery):
             callback_query.message.chat.id,
             voice=types.InputFile(media_file_path + 'uwu-voice.mp3')
         )
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
 
 async def pr_get_virus(bot, message: types.Message):
@@ -199,7 +213,7 @@ async def pr_get_horoscope_zz(bot, callback_query: types.CallbackQuery):
         file,
         caption=soup.find_all(id="eje_text")[0].findNext().findNext().findNext().findNext().findNext().findNext().text
     )
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
 
 async def pr_get_horoscope_year(bot, callback_query: types.CallbackQuery):
@@ -214,83 +228,97 @@ async def pr_get_horoscope_year(bot, callback_query: types.CallbackQuery):
         file,
         caption=capt
     )
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
+
+
+def check_ban(id):
+    try:
+        if (datetime.datetime.now() - banned_users[id]).total_seconds() > 600:
+            return True
+        else:
+            return False
+    except:
+        return True
 
 
 async def get_message_answer(bot, message: types.Message):
-    if message.text.lower().find('ахах') != -1:
-        await message.answer_sticker(config.FUNY_STICKERS[random.randint(0, len(config.FUNY_STICKERS) - 1)])
-    if message.text.lower().find('пиздец') != -1:
-        await message.answer_sticker(config.SHOCK_STICKERS[random.randint(0, len(config.SHOCK_STICKERS) - 1)])
-    if message.text.lower().find('хорош') != -1:
-        await message.answer_sticker(config.GOODMAN_STICKERS[random.randint(0, len(config.GOODMAN_STICKERS) - 1)])
-    if message.text.lower().find('спать') != -1:
-        await message.answer_sticker(config.SLEEP_STICKERS[random.randint(0, len(config.SLEEP_STICKERS) - 1)])
-    if message.text == '+':
-        await message.answer('+')
-    if message.text.lower().find('поедем') != -1 and message.text.lower().find('кушать') != -1:
-        ver = random.randint(0, 100)
-        if 0 <= ver < 22:
-            await message.answer('Едем в аймолл')
-        elif 22 <= ver < 44:
-            await message.answer('Едем в планету')
-        elif 44 <= ver < 66:
-            await message.answer('Идём в шаву')
-        elif 66 <= ver < 88:
-            await message.answer('Идём в столовку')
-        elif 88 <= ver < 90:
-            await message.answer('Едим раков')
-        elif 90 <= ver < 92:
-            await message.answer('Едим роллы')
-        elif 92 <= ver < 94:
-            await message.answer('Едим смузи')
-        elif 94 <= ver < 96:
-            await message.answer('Едим богатырскую')
-        elif 96 <= ver < 98:
-            await message.answer('Едим пиццамен')
-        else:
-            await message.answer('Шашлыкофф')
-    if check_fix(message.text):
-        await pr_fix(bot, message)
-    if message.text.lower().find('где') != -1 and message.text.lower().find('?') != -1:
-        await pr_search(bot, message)
-    if message.text.lower().find('переиграл') != -1:
-        await pr_replay(bot, message)
-    if message.text.lower().find('бубу') != -1:
-        await message.answer_sticker(config.BUBU_STICKERS[random.randint(0, len(config.BUBU_STICKERS) - 1)])
-    if message.text.find('👉👈') != -1:
-        await pr_fingers(bot, message)
-    if message.text.lower().find('пидор') != -1:
-        await pr_pidor(bot, message)
-    if message.text.lower().find('пидар') != -1:
-        await pr_pidor(bot, message)
-    if message.text.lower().find('шок') != -1:
-        await get_fura(bot, message)
-    if message.text.lower().find('((') != -1:
-        await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
-    if message.text.lower().find('грусть') != -1:
-        await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
-    if message.text.lower().find('плак') != -1:
-        await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
-    if message.text.lower().find('похуй') != -1:
-        await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
-    if message.text.lower().find('поебать') != -1:
-        await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
-    if message.text.lower().find('плевать') != -1:
-        await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
-    if message.text.lower().find('без разницы') != -1:
-        await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
-    if message.text.lower().find('когди') != -1:
-        await pr_cogdis(bot, message)
-    if message.text.lower().find('заболел') != -1:
-        await pr_get_virus(bot, message)
-    if message.text.lower().find('болею') != -1:
-        await pr_get_virus(bot, message)
-    if message.text.find('https://ticket.ertelecom.ru/browse/') != -1:
-        if message.text.find(' ', message.text.find('browse/')) != -1:
-            await message.answer(get_note(message.text[message.text.find('browse/') + 7:message.text.find(' ', message.text.find('browse/'))]))
-        else:
-            await message.answer(get_note(message.text[message.text.find('browse/') + 7:]))
+    if check_ban(message.from_user.id):
+        if message.text is not None:
+            if message.text.lower().find('ахах') != -1:
+                await message.answer_sticker(config.FUNY_STICKERS[random.randint(0, len(config.FUNY_STICKERS) - 1)])
+            if message.text.lower().find('пиздец') != -1:
+                await message.answer_sticker(config.SHOCK_STICKERS[random.randint(0, len(config.SHOCK_STICKERS) - 1)])
+            if message.text.lower().find('хорош') != -1:
+                await message.answer_sticker(config.GOODMAN_STICKERS[random.randint(0, len(config.GOODMAN_STICKERS) - 1)])
+            if message.text.lower().find('спать') != -1:
+                await message.answer_sticker(config.SLEEP_STICKERS[random.randint(0, len(config.SLEEP_STICKERS) - 1)])
+            if message.text == '+':
+                await message.answer('+')
+            if message.text.lower().find('поедем') != -1 and message.text.lower().find('кушать') != -1:
+                ver = random.randint(0, 100)
+                if 0 <= ver < 22:
+                    await message.answer('Едем в аймолл')
+                elif 22 <= ver < 44:
+                    await message.answer('Едем в планету')
+                elif 44 <= ver < 66:
+                    await message.answer('Идём в шаву')
+                elif 66 <= ver < 88:
+                    await message.answer('Идём в столовку')
+                elif 88 <= ver < 90:
+                    await message.answer('Едим раков')
+                elif 90 <= ver < 92:
+                    await message.answer('Едим роллы')
+                elif 92 <= ver < 94:
+                    await message.answer('Едим смузи')
+                elif 94 <= ver < 96:
+                    await message.answer('Не едим сегодня')
+                elif 96 <= ver < 98:
+                    await message.answer('Едим пиццамен')
+                else:
+                    await message.answer('Шашлыкофф')
+            if check_fix(message.text):
+                await pr_fix(bot, message)
+            if message.text.lower().find('где') != -1 and message.text.lower().find('?') != -1:
+                await pr_search(bot, message)
+            if message.text.lower().find('переиграл') != -1:
+                await pr_replay(bot, message)
+            if message.text.lower().find('бубу') != -1:
+                await message.answer_sticker(config.BUBU_STICKERS[random.randint(0, len(config.BUBU_STICKERS) - 1)])
+            if message.text.find('👉👈') != -1:
+                await pr_fingers(bot, message)
+            if message.text.lower().find('пидор') != -1:
+                await pr_pidor(bot, message)
+            if message.text.lower().find('пидар') != -1:
+                await pr_pidor(bot, message)
+            if message.text.lower().find('шок') != -1:
+                await get_fura(bot, message)
+            if message.text.lower().find('((') != -1:
+                await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
+            if message.text.lower().find('грусть') != -1:
+                await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
+            if message.text.lower().find('плак') != -1:
+                await message.answer_sticker(config.CRY_STICKERS[random.randint(0, len(config.CRY_STICKERS) - 1)])
+            if message.text.lower().find('похуй') != -1:
+                await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
+            if message.text.lower().find('поебать') != -1:
+                await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
+            if message.text.lower().find('плевать') != -1:
+                await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
+            if message.text.lower().find('без разницы') != -1:
+                await message.answer_sticker(config.POHUI_STICKERS[random.randint(0, len(config.POHUI_STICKERS) - 1)])
+            if message.text.lower().find('когди') != -1:
+                await pr_cogdis(bot, message)
+            if message.text.lower().find('заболел') != -1:
+                await pr_get_virus(bot, message)
+            if message.text.lower().find('болею') != -1:
+                await pr_get_virus(bot, message)
+            if message.text.find('https://ticket.ertelecom.ru/browse/') != -1:
+                if message.text.find(' ', message.text.find('browse/')) != -1:
+                    await message.answer(get_note(message.text[message.text.find('browse/') + 7:message.text.find(' ', message.text.find('browse/'))]))
+                else:
+                    await message.answer(get_note(message.text[message.text.find('browse/') + 7:]))
+    else:
+        await bot.delete_message(message.chat.id, message.message_id)
 
 async def pr_cogdis(bot, message: types.Message):
     file = types.InputFile(media_file_path + 'cogdish.jpg')
@@ -384,7 +412,7 @@ async def pr_get_lesh(bot, callback_query: types.CallbackQuery):
             file,
             caption=f'@{login} сам получает леща'
         )
-        db.insert_log(login, 'mouse')
+        db.insert_log(login, 'lesh')
     else:
         await bot.send_photo(
             callback_query.message.chat.id,
@@ -392,7 +420,7 @@ async def pr_get_lesh(bot, callback_query: types.CallbackQuery):
             caption=f'@{callback_query.data} получает леща'
         )
         db.insert_log(callback_query.data, 'lesh')
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
 async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
     users = db.get_all_users()
@@ -403,6 +431,7 @@ async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
         cnt_mouse = 0
         cnt_cool = 0
         cnt_lesh = 0
+        cnt_ban = 0
         for stat in stats:
             if stat[0] == 'hui':
                 cnt_hui += 1
@@ -412,6 +441,8 @@ async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
                 cnt_cool += 1
             elif stat[0] == 'lesh':
                 cnt_lesh += 1
+            elif stat[0] == 'ban':
+                cnt_ban += 1
         if cnt_mouse > 0:
             result += f'@{user[1]} был(а) назван(а) мышью {cnt_mouse} раз(а)\n'
         if cnt_cool > 0:
@@ -420,10 +451,37 @@ async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
             result += f'@{user[1]} был(а) послан(а) нахуй {cnt_hui} раз(а)\n'
         if cnt_lesh > 0:
             result += f'@{user[1]} получил(а) леща {cnt_lesh} раз(а)\n'
+        if cnt_ban > 0:
+            result += f'@{user[1]} получил(а) бан {cnt_ban} раз(а)\n'
         if result != '':
             await callback_query.message.answer(result)
-    await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    await pr_del_msg(bot, callback_query)
 
+
+async def pr_ban_user(bot, callback_query: types.CallbackQuery):
+    banned_users[db.get_user_id(callback_query.data)] = datetime.datetime.now()
+    db.insert_log(callback_query.data, 'ban')
+    await bot.send_photo(
+        callback_query.message.chat.id,
+        types.InputFile(media_file_path + 'ban.jpg'),
+        caption=f'@{callback_query.data} получает бан на 10 минут'
+    )
+    await pr_del_msg(bot, callback_query)
+
+
+async def pr_pain_user(bot, callback_query: types.CallbackQuery):
+    await bot.send_photo(
+        callback_query.message.chat.id,
+        types.InputFile(media_file_path + 'pain.jpg'),
+        caption=f'Желаем нашей любимой мыши @{callback_query.data} скорейшего выздоровления'
+    )
+    await pr_del_msg(bot, callback_query)
+
+async def pr_del_msg(bot, callback_query: types.CallbackQuery):
+    try:
+        await bot.delete_message(callback_query.message.chat.id, callback_query.message.message_id)
+    except:
+        print('Message deleted early')
 
 async def command_handler(bot, callback_query: types.CallbackQuery):
     global bot_state
@@ -445,41 +503,18 @@ async def command_handler(bot, callback_query: types.CallbackQuery):
     elif bot_state == 'lesh':
         bot_state = 'Simple'
         await pr_get_lesh(bot, callback_query)
-
-
-
-#import time
-#
-#import torch
-#import sounddevice as sd
-#
-#
-#t_language = 'ru'
-#t_model_id = 'ru_v3'
-#t_sample_rate = 48000
-#t_speaker = 'baya'
-#t_put_accent = True
-#t_put_yoo = True
-#device = torch.device('cpu')
-#text = 'Привет, я архимаг ордена хранителей ТУ, Мегумин'
-#
-#model, _ = torch.hub.load(
-#    repo_or_dir='snakers4/silero-models',
-#    model='silero_tts',
-#    language=t_language,
-#    speaker=t_model_id
-#)
-#
-#audio = model.apply_tts(
-#    text=text,
-#    speaker=t_speaker,
-#    sample_rate=t_sample_rate,
-#    put_accent=t_put_accent,
-#    put_yo=t_put_yoo
-#)
-#
-#print(text)
-#
-#sd.play(audio, t_sample_rate)
-#time.sleep(len(audio) / t_sample_rate)
-#sd.stop()
+    elif bot_state == 'ban':
+        bot_state = 'Simple'
+        await pr_ban_user(bot, callback_query)
+    elif bot_state == 'pain':
+        bot_state = 'Simple'
+        await pr_pain_user(bot, callback_query)
+    elif bot_state == 'zaeb':
+        bot_state = 'Simple'
+        await callback_query.message.answer(f'@{callback_query.data} уже просто заебал')
+        await pr_fuck_you(bot, callback_query)
+        await pr_set_mouse(bot, callback_query)
+        await pr_get_lesh(bot, callback_query)
+        await pr_pain_user(bot, callback_query)
+        if callback_query.from_user.id == 386629136:
+            await pr_ban_user(bot, callback_query)

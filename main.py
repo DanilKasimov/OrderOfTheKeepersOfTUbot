@@ -21,7 +21,7 @@ async def callback_registration(callback_query: types.CallbackQuery):
     await hand.registration_user(bot, callback_query)
 
 
-@dp.callback_query_handler(lambda c: c.data in ['fuck_you', 'set_mouse', 'complement', 'lesh', 'statistic'])
+@dp.callback_query_handler(lambda c: c.data in ['fuck_you', 'set_mouse', 'complement', 'lesh', 'statistic', 'ban', 'pain', 'zaeb'])
 async def callback_handler(callback_query: types.CallbackQuery):
     await hand.callback_handler(bot, callback_query)
 
@@ -41,7 +41,7 @@ async def fuck_you(callback_query: types.CallbackQuery):
     await hand.command_handler(bot, callback_query)
 
 
-@dp.message_handler()
+@dp.message_handler(content_types=types.ContentType.all())
 async def get_message_answer(message: types.Message):
     await hand.get_message_answer(bot, message)
 
