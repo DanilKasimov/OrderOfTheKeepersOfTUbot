@@ -66,10 +66,11 @@ async def callback_handler(bot, callback_query: types.CallbackQuery):
         buttons.append(types.InlineKeyboardButton('Инвентаризация', callback_data='Инвентаризация'))
         fuck_keyboard = types.InlineKeyboardMarkup()
         b = 0
-        while b < len(buttons) // 2 + 1:
+        while b < len(buttons) - 1:
             fuck_keyboard.row(buttons[b], buttons[b + 1])
             b += 2
-        fuck_keyboard.add(buttons[len(buttons) - 1])
+        if len(buttons) % 2 != 0:
+            fuck_keyboard.add(buttons[len(buttons) - 1])
         await callback_query.message.answer('Выберите пользователя', reply_markup=fuck_keyboard)
         await pr_del_msg(bot, callback_query)
 
@@ -114,6 +115,7 @@ async def get_menu(bot, message: types.Message):
             buttons.append(types.InlineKeyboardButton('Дать леща', callback_data='lesh'))
             buttons.append(types.InlineKeyboardButton('Статистика', callback_data='statistic'))
             buttons.append(types.InlineKeyboardButton('Пожелать здоровья', callback_data='pain'))
+            buttons.append(types.InlineKeyboardButton('Порча на понос', callback_data='porch'))
             if message.from_user.id == 386629136:
                 buttons.append(types.InlineKeyboardButton('Забанить пользователя на 10 минут', callback_data='ban'))
             buttons.append(types.InlineKeyboardButton('Пользователь заебал', callback_data='zaeb'))
@@ -121,10 +123,11 @@ async def get_menu(bot, message: types.Message):
             buttons.append(types.InlineKeyboardButton('Регистрация', callback_data='registration'))
         main_keyboard = types.InlineKeyboardMarkup()
         b = 0
-        while b < len(buttons) // 2 + 1:
+        while b < len(buttons) - 1:
             main_keyboard.row(buttons[b], buttons[b + 1])
             b += 2
-        main_keyboard.add(buttons[len(buttons) - 1])
+        if len(buttons) % 2 != 0:
+            main_keyboard.add(buttons[len(buttons) - 1])
         await message.answer('Привет, шо нада?', reply_markup=main_keyboard)
         await bot.delete_message(message.chat.id, message.message_id)
     else:
@@ -440,6 +443,7 @@ async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
         cnt_cool = 0
         cnt_lesh = 0
         cnt_ban = 0
+        cnt_porch = 0
         for stat in stats:
             if stat[0] == 'hui':
                 cnt_hui += 1
@@ -451,6 +455,8 @@ async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
                 cnt_lesh += 1
             elif stat[0] == 'ban':
                 cnt_ban += 1
+            elif stat[0] == 'porch':
+                cnt_porch += 1
         if cnt_mouse > 0:
             result += f'@{user[1]} был(а) назван(а) мышью {cnt_mouse} раз(а)\n'
         if cnt_cool > 0:
@@ -461,6 +467,8 @@ async def pr_get_statistic(bot, callback_query: types.CallbackQuery):
             result += f'@{user[1]} получил(а) леща {cnt_lesh} раз(а)\n'
         if cnt_ban > 0:
             result += f'@{user[1]} получил(а) бан {cnt_ban} раз(а)\n'
+        if cnt_porch > 0:
+            result += f'@{user[1]} словил(а) порчу на понос {cnt_porch} раз(а)\n'
         if result != '':
             await callback_query.message.answer(result)
     await pr_del_msg(bot, callback_query)
@@ -491,6 +499,15 @@ async def pr_del_msg(bot, callback_query: types.CallbackQuery):
     except:
         print('Message deleted early')
 
+async def pr_porch(bot, callback_query: types.CallbackQuery):
+    db.insert_log(callback_query.data, 'porch')
+    await bot.send_photo(
+        callback_query.message.chat.id,
+        types.InputFile(media_file_path + 'porch.jpg'),
+        caption=f'@{callback_query.data} словил порчу на понос'
+    )
+    await pr_del_msg(bot, callback_query)
+
 async def command_handler(bot, callback_query: types.CallbackQuery):
     global bot_state
     if bot_state == 'fuck_you':
@@ -517,6 +534,9 @@ async def command_handler(bot, callback_query: types.CallbackQuery):
     elif bot_state == 'pain':
         bot_state = 'Simple'
         await pr_pain_user(bot, callback_query)
+    elif bot_state == 'porch':
+        bot_state = 'Simple'
+        await pr_porch(bot, callback_query)
     elif bot_state == 'zaeb':
         bot_state = 'Simple'
         await callback_query.message.answer(f'@{callback_query.data} уже просто заебал')
@@ -524,5 +544,6 @@ async def command_handler(bot, callback_query: types.CallbackQuery):
         await pr_set_mouse(bot, callback_query)
         await pr_get_lesh(bot, callback_query)
         await pr_pain_user(bot, callback_query)
+        await pr_porch(bot, callback_query)
         if callback_query.from_user.id == 386629136:
             await pr_ban_user(bot, callback_query)
