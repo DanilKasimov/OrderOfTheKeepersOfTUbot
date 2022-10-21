@@ -62,9 +62,14 @@ async def callback_handler(bot, callback_query: types.CallbackQuery):
         buttons.append(types.InlineKeyboardButton('Бит', callback_data='Бит'))
         buttons.append(types.InlineKeyboardButton('Миша', callback_data='Миша'))
         buttons.append(types.InlineKeyboardButton('Вонючая магистраль', callback_data='Вонючая магистраль'))
+        buttons.append(types.InlineKeyboardButton('BPMS', callback_data='BPMS'))
+        buttons.append(types.InlineKeyboardButton('Инвентаризация', callback_data='Инвентаризация'))
         fuck_keyboard = types.InlineKeyboardMarkup()
-        for b in buttons:
-            fuck_keyboard.add(b)
+        b = 0
+        while b < len(buttons) // 2 + 1:
+            fuck_keyboard.row(buttons[b], buttons[b + 1])
+            b += 2
+        fuck_keyboard.add(buttons[len(buttons) - 1])
         await callback_query.message.answer('Выберите пользователя', reply_markup=fuck_keyboard)
         await pr_del_msg(bot, callback_query)
 
@@ -115,8 +120,11 @@ async def get_menu(bot, message: types.Message):
         else:
             buttons.append(types.InlineKeyboardButton('Регистрация', callback_data='registration'))
         main_keyboard = types.InlineKeyboardMarkup()
-        for b in buttons:
-            main_keyboard.add(b)
+        b = 0
+        while b < len(buttons) // 2 + 1:
+            main_keyboard.row(buttons[b], buttons[b + 1])
+            b += 2
+        main_keyboard.add(buttons[len(buttons) - 1])
         await message.answer('Привет, шо нада?', reply_markup=main_keyboard)
         await bot.delete_message(message.chat.id, message.message_id)
     else:
