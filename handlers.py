@@ -64,6 +64,8 @@ async def callback_handler(bot, callback_query: types.CallbackQuery):
         buttons.append(types.InlineKeyboardButton('Вонючая магистраль', callback_data='Вонючая магистраль'))
         buttons.append(types.InlineKeyboardButton('BPMS', callback_data='BPMS'))
         buttons.append(types.InlineKeyboardButton('Инвентаризация', callback_data='Инвентаризация'))
+        buttons.append(types.InlineKeyboardButton('Бабка уборщица', callback_data='Бабка уборщица'))
+        buttons.append(types.InlineKeyboardButton('Пиошники', callback_data='Пиошники'))
         fuck_keyboard = types.InlineKeyboardMarkup()
         b = 0
         while b < len(buttons) - 1:
@@ -328,6 +330,13 @@ async def get_message_answer(bot, message: types.Message):
                     await message.answer(get_note(message.text[message.text.find('browse/') + 7:message.text.find(' ', message.text.find('browse/'))]))
                 else:
                     await message.answer(get_note(message.text[message.text.find('browse/') + 7:]))
+            if message.text.lower().find('справедливо') != -1:
+                await message.answer_sticker('CAACAgIAAxkBAAEGSxtjY0JDVWilZ_UZndYPkDo2SNiyTgACVAADuRtZC2dCUqTSakgJKgQ')
+            if message.text.lower().find('миша заебал') != -1:
+                await message.answer_sticker('CAACAgIAAxkBAAEGSx1jY0LJbBYBHWeKjzukEemjCNxViAACWgADuRtZC1fMhgYQTAjPKgQ')
+                await message.answer_sticker('CAACAgIAAxkBAAEGSx9jY0LLH0u2SEqZnzGYbA3qZPNpVgACdQADuRtZCwrzLOB1qOVZKgQ')
+                await message.answer_sticker('CAACAgIAAxkBAAEGSx9jY0LLH0u2SEqZnzGYbA3qZPNpVgACdQADuRtZCwrzLOB1qOVZKgQ')
+                await message.answer_sticker('CAACAgIAAxkBAAEGSyFjY0LNUmrLHxVU5bHow9Ebkms54wACWwADuRtZC8HaaJQtmnPkKgQ')
     else:
         await bot.delete_message(message.chat.id, message.message_id)
 
@@ -543,7 +552,6 @@ async def command_handler(bot, callback_query: types.CallbackQuery):
         await pr_fuck_you(bot, callback_query)
         await pr_set_mouse(bot, callback_query)
         await pr_get_lesh(bot, callback_query)
-        await pr_pain_user(bot, callback_query)
         await pr_porch(bot, callback_query)
         if callback_query.from_user.id == 386629136:
             await pr_ban_user(bot, callback_query)
