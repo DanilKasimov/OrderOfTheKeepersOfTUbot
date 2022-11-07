@@ -19,7 +19,7 @@ start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True).add(start_butto
 def get_note(ticket):
     req = requests.get(
         'https://ticket.ertelecom.ru/rest/api/latest/issue/' + ticket,
-        auth=('service_eqm_jira', 'MYgFRh2dTA')
+        auth=(config.JIRA_LOGIN, config.JIRA_PASSWORD)
     )
     ticket_name = req.json()["fields"]["summary"]
 
@@ -66,6 +66,7 @@ async def callback_handler(bot, callback_query: types.CallbackQuery):
         buttons.append(types.InlineKeyboardButton('Инвентаризация', callback_data='Инвентаризация'))
         buttons.append(types.InlineKeyboardButton('Бабка уборщица', callback_data='Бабка уборщица'))
         buttons.append(types.InlineKeyboardButton('Пиошники', callback_data='Пиошники'))
+        buttons.append(types.InlineKeyboardButton('SAP', callback_data='SAP'))
         fuck_keyboard = types.InlineKeyboardMarkup()
         b = 0
         while b < len(buttons) - 1:

@@ -4,6 +4,10 @@ HOROSCOPE_URL = 'https://1001goroskop.ru/?znak='
 
 HOROSCOPE_YEAR_URL = 'https://moigoroskop.org/vostochnyi-goroskop/'
 
+JIRA_LOGIN = 'service_eqm_jira'
+
+JIRA_PASSWORD = 'MYgFRh2dTA'
+
 ZODIACS = {
     'Овен': 'aries',
     'Телец': 'taurus',
