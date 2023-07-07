@@ -6,15 +6,12 @@ import config
 import requests
 from bs4 import BeautifulSoup
 import datetime
-
-
+from text_handlers import text_messages
 
 db = DataBaseUtils.DbConnection('OrderBot.db')
 banned_users = {}
-bot_state = 'Simple'
 media_file_path = str(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'media')) + '\\'
-start_button = types.KeyboardButton('/Старт')
-start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True).add(start_button)
+
 main_menu_buttons = {
     'Гороскоп по ЗЗ': 'horoscope',
     'Послать нахуй': 'fuck_you',
@@ -80,12 +77,20 @@ async def command_handler(bot : Bot, message : types.Message):
         await pr_del_msg(bot, message.chat.id, message.message_id)
     elif message.get_command() == '/Меню':
         if message.from_user.id == 386629136:
+            start_button = types.KeyboardButton('/Старт')
+            start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True).add(start_button)
             await message.answer('Меню', reply_markup=start_keyboard)
             await pr_del_msg(bot, message.chat.id, message.message_id)
 
 async def text_handler(bot : Bot, message : types.Message):
-    pass
-
+    if check_ban(message.from_user.id):
+        if message.text is not None:
+            for rec in list(text_messages.keys()):
+                if message.text.lower().find(rec) != -1:
+                    await text_messages[rec](bot, message)
+                    break
+    else:
+        await pr_del_msg(bot, message.chat.id, message.message_id)
 
 async def message_handler(bot : Bot, message : types.Message):
     if check_ban(message.from_user.id):
@@ -97,8 +102,6 @@ async def message_handler(bot : Bot, message : types.Message):
         await pr_del_msg(bot, message.chat.id, message.message_id)
 
 async def get_horoscope_keyboard(bot : Bot, callback_query: types.CallbackQuery):
-    global bot_state
-    bot_state = callback_query.data
     keyboard = types.InlineKeyboardMarkup()
     for name in list(config.ZODIACS.keys()):
         keyboard.add(types.InlineKeyboardButton(name, callback_data=config.ZODIACS[name])) 
