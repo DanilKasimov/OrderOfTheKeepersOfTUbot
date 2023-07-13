@@ -6,37 +6,10 @@ import config
 import requests
 from bs4 import BeautifulSoup
 import datetime
+from constant import db, media_file_path, main_menu_buttons, users_dop
 from text_handlers import text_messages
 
-db = DataBaseUtils.DbConnection('OrderBot.db')
 banned_users = {}
-media_file_path = str(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'media')) + '\\'
-
-main_menu_buttons = {
-    'Гороскоп по ЗЗ': 'horoscope',
-    'Послать нахуй': 'fuck_you',
-    'Объявить мышью': 'set_mouse',
-    'Сделать комплимент': 'complement',
-    'Дать леща': 'lesh',
-    'Статистика': 'statistic',
-    'Пожелать здоровья': 'pain',
-    'Порча на понос': 'porch',
-    'Пользователь заебал': 'zaeb',
-}
-users_dop = [
-    'Бухгалтерия', 
-    'Аудиторы',
-    'Мониторинг',
-    'Бит',
-    'Миша',
-    'Вонючая магистраль',
-    'BPMS',
-    'Инвентаризация',
-    'Бабка уборщица',
-    'Пиошники',
-    'SAP',
-    'Олег',
-]
 
 def check_ban(id):
     try:
@@ -70,36 +43,6 @@ async def pr_del_msg(bot : Bot, chat_id, message_id):
         await bot.delete_message(chat_id, message_id)
     except:
         print('Message deleted early')
-
-async def command_handler(bot : Bot, message : types.Message):
-    if message.get_command() == '/Старт':
-        await message.answer('Привет, шо нада?', reply_markup=get_main_keyboard(message.from_user.id))
-        await pr_del_msg(bot, message.chat.id, message.message_id)
-    elif message.get_command() == '/Меню':
-        if message.from_user.id == 386629136:
-            start_button = types.KeyboardButton('/Старт')
-            start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True).add(start_button)
-            await message.answer('Меню', reply_markup=start_keyboard)
-            await pr_del_msg(bot, message.chat.id, message.message_id)
-
-async def text_handler(bot : Bot, message : types.Message):
-    if check_ban(message.from_user.id):
-        if message.text is not None:
-            for rec in list(text_messages.keys()):
-                if message.text.lower().find(rec) != -1:
-                    await text_messages[rec](bot, message)
-                    break
-    else:
-        await pr_del_msg(bot, message.chat.id, message.message_id)
-
-async def message_handler(bot : Bot, message : types.Message):
-    if check_ban(message.from_user.id):
-        if message.is_command():
-            await command_handler(bot, message)
-        else:
-            await text_handler(bot, message)
-    else:
-        await pr_del_msg(bot, message.chat.id, message.message_id)
 
 async def get_horoscope_keyboard(bot : Bot, callback_query: types.CallbackQuery):
     keyboard = types.InlineKeyboardMarkup()
@@ -365,3 +308,32 @@ async def callback_query_handler(bot : Bot, callback_query: types.CallbackQuery)
         elif callback_query.data == 'statistic':
             await get_statistic(bot, callback_query)
 
+async def command_handler(bot : Bot, message : types.Message):
+    if message.get_command() == '/Старт':
+        await message.answer('Привет, шо нада?', reply_markup=get_main_keyboard(message.from_user.id))
+        await pr_del_msg(bot, message.chat.id, message.message_id)
+    elif message.get_command() == '/Меню':
+        if message.from_user.id == 386629136:
+            start_button = types.KeyboardButton('/Старт')
+            start_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True).add(start_button)
+            await message.answer('Меню', reply_markup=start_keyboard)
+            await pr_del_msg(bot, message.chat.id, message.message_id)
+
+async def text_handler(bot : Bot, message : types.Message):
+    if check_ban(message.from_user.id):
+        if message.text is not None:
+            for rec in list(text_messages.keys()):
+                if message.text.lower().find(rec) != -1:
+                    await text_messages[rec](bot, message)
+                    break
+    else:
+        await pr_del_msg(bot, message.chat.id, message.message_id)
+
+async def message_handler(bot : Bot, message : types.Message):
+    if check_ban(message.from_user.id):
+        if message.is_command():
+            await command_handler(bot, message)
+        else:
+            await text_handler(bot, message)
+    else:
+        await pr_del_msg(bot, message.chat.id, message.message_id)

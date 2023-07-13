@@ -1,12 +1,7 @@
 from aiogram import types, Bot
 import random
 import config
-import DataBaseUtils
-import os
-
-media_file_path = str(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'media')) + '\\'
-
-db = DataBaseUtils.DbConnection('OrderBot.db')
+from constant import media_file_path, db
 
 async def print_ahah(bot : Bot, message : types.Message):
     await message.answer_sticker(config.FUNY_STICKERS[random.randint(0, len(config.FUNY_STICKERS) - 1)]) 
