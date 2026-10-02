@@ -2,8 +2,6 @@ import sqlite3
 import os
 import datetime
 
-"""ЕБАТЬ"""
-
 
 class DbConnection:
     def __init__(self, name):
